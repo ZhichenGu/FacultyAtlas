@@ -7,7 +7,7 @@
 - 已实现：A–Z 排序与字母筛选；中文、英文和拼音搜索；院系／任职状态筛选；三种模板；档案新建编辑；自定义文字、长文本、日期、数字、下拉字段；PDF／图片附件；个人账号密码登录接入；只读／编辑角色；30 秒同步与手动同步；版本冲突提示；数据库修改记录。
 - 演示模式：六条虚构档案，修改及附件仅保留在当前页面，刷新后清空，不会写入正式数据库。
 - 尚未接通：没有提供 Supabase 项目 URL、公钥或测试账号，真实登录、数据库权限、云端附件及双账号并发尚未在远端验证。
-- 尚未发布：没有提供 GitHub 仓库，本交付包含可上传的完整源码及 Pages 发布工作流。
+- GitHub 仓库：`ZhichenGu/FacultyAtlas`。已补充兼容分支发布的根目录入口；正式档案登录仍需配置 Supabase。
 
 ## 本机体验
 
@@ -59,13 +59,17 @@ window.FACULTY_CONFIG = {
 
 ### 2. GitHub Pages
 
-1. 新建或选择你自己的 GitHub 仓库。
-2. 将本文件夹内全部文件放到仓库根目录，保留 `.github/workflows/pages.yml`。不要只上传 dist，也不要上传真实档案、扫描件或数据库导出。
-3. 将默认分支设为 `main`，在 Settings → Pages → Source 选择 **GitHub Actions**。
-4. 提交后运行 `Deploy Faculty Atlas`；完成时 GitHub 提供 Pages 链接。若分支不是 main，请相应修改 workflow。
-5. 分享 Pages 链接给已分配账号的 HR。未登录用户只能看登录页和虚构演示。
+当前仓库使用 **Deploy from a branch → main → / (root)** 发布。
 
-GitHub Pages 是静态托管，无法单独实现共享私有数据库。网页源码本身公开可获取，真实档案经 HTTPS 直接访问 Supabase，不经过 GitHub。每位 HR 使用独立邮箱和密码，避免共用一个口令。
+1. 在仓库 Settings → Pages 中确认 Source 为 **Deploy from a branch**，分支为 **main**，目录为 **/ (root)**。
+2. 用 GitHub Desktop 提交更改并点击 **Push origin**。
+3. 等待 GitHub 的 `pages build and deployment` 完成后，访问 https://zhichengu.github.io/FacultyAtlas/ 。
+
+根目录 `index.html` 会自动进入 `dist/` 中的网站；`.nojekyll` 让 Pages 按静态文件发布。请保留这两个文件，避免再次把 README 当首页。
+
+`dist/` 中是网页文件，数据库仍需按上面的 Supabase 步骤接入。先前交付包的自定义 `.github/workflows/pages.yml` 未复制进此仓库；当前分支发布方式不需要它。不要混用两种部署来源。
+
+GitHub Pages 只托管网页，真实档案经 HTTPS 访问 Supabase。每位 HR 使用独立邮箱和密码。
 
 ### 3. 正式使用前的远端验收
 
@@ -100,7 +104,7 @@ GitHub Pages 是静态托管，无法单独实现共享私有数据库。网页�
 - `dist/style.css`：桌面和手机样式。
 - `dist/config.js`：项目 URL、公钥。
 - `database/setup.sql`：数据库、权限、私有存储。
-- `.github/workflows/pages.yml`：GitHub 自动部署。
+- `index.html` 与 `.nojekyll`：GitHub Pages 根目录入口与静态发布标记。
 - `AGENTS.md`：后续模型协作规则。
 - `规则审查.md`：规则风险、处理方法与依据。
 - `验证记录.md`：本次实际检查与待验收项。

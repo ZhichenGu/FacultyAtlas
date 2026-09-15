@@ -1,0 +1,20 @@
+// Fast checks for search, ordering, and escaping. No account or network required.
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{webcrypto}=require('node:crypto');
+const elements=new Map();
+const document={querySelector(selector){if(!elements.has(selector))elements.set(selector,{value:'',addEventListener(){}});return elements.get(selector)},querySelectorAll(){return []},addEventListener(){}};
+const context=vm.createContext({document,window:{FACULTY_CONFIG:{},addEventListener(){}},crypto:webcrypto,structuredClone,console,AbortController});
+vm.runInContext(fs.readFileSync(require('node:path').join(__dirname,'../dist/app.js'),'utf8'),context);
+const run=source=>vm.runInContext(source,context);
+run('demo=true; records=sampleRecords()');
+assert.equal(run('filteredRecords().length'),6);
+assert.equal(run('filteredRecords()[0].data.name'),'陈知远');
+elements.get('#search').value='ZHANG';assert.equal(run('filteredRecords()[0].data.name'),'张明远');assert.equal(run('filteredRecords().length'),1);
+elements.get('#search').value='James';assert.equal(run('filteredRecords()[0].data.name'),'James Wilson');
+elements.get('#search').value='林若宁';assert.equal(run('filteredRecords().length'),1);
+elements.get('#search').value='';run("letter='W'");assert.equal(run('filteredRecords().length'),2);
+elements.get('#department').value='人文学院';assert.equal(run('filteredRecords()[0].data.name'),'王书言');
+assert.equal(run("normalize('Éléna')"),'elena');
+assert.equal(run("esc('<script>\"&')"),'&lt;script&gt;&quot;&amp;');
+assert.ok(!run(`fieldHtml(['x','<img src=x onerror=alert(1)>','text'],'\"><script>alert(1)</script>')`).includes('<script>'));
+assert.ok(!run(`fieldHtml(['x','X','text\" onfocus=\"alert(1)'],'')`).includes('type="text" onfocus='));
+console.log('PASS: 12 assertions — bilingual search, letter/department filters, order, normalization, HTML escaping.');

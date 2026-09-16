@@ -29,3 +29,28 @@
   color: #fff;
   background: #b4232f;
 }
+
+.editor-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-toggle {
+  padding: 7px 11px;
+  font-size: 13px;
+  color: #516276;
+  background: #f5f7fa;
+  white-space: nowrap;
+}
+
+.view-toggle[aria-pressed="true"] {
+  color: #1748bd;
+  background: #edf2ff;
+  border-color: #bdd0ff;
+}
+
+@media (max-width: 740px) {
+  .editor-heading-actions { gap: 5px; }
+  .view-toggle { white-space: normal; line-height: 1.25; padding: 6px 8px; }
+}
